@@ -23,7 +23,7 @@ public class ImageGridAdapter extends RecyclerView.Adapter<ImageGridAdapter.Imag
     private final List<Uri> imageUris;
     private final Context context;
 
-    public class ImageItemViewHolder extends RecyclerView.ViewHolder {
+    public static class ImageItemViewHolder extends RecyclerView.ViewHolder {
         ImageView imageItemView;
         public ImageItemViewHolder(@NonNull View imageItemView) {
             super(imageItemView);
