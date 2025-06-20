@@ -11,6 +11,7 @@ import android.widget.ImageView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.sebastienyannis.zarazarao.R;
 
 import java.util.List;
@@ -45,7 +46,10 @@ public class ImageGridAdapter extends RecyclerView.Adapter<ImageGridAdapter.Imag
     @Override
     public void onBindViewHolder(@NonNull ImageItemViewHolder holder, int position) {
         Uri imageUri = imageUris.get(position);
-        holder.imageItemView.setImageURI(imageUri);
+        Glide.with(context)
+            .load(imageUri).centerCrop()
+            .centerCrop()
+            .into(holder.imageItemView);
     }
 
     @Override
