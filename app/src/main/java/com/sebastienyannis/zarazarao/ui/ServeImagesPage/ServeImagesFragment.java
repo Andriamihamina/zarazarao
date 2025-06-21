@@ -1,4 +1,4 @@
-package com.sebastienyannis.zarazarao.ui;
+package com.sebastienyannis.zarazarao.ui.ServeImagesPage;
 
 import android.Manifest;
 import android.content.ContentUris;
@@ -15,9 +15,7 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.contract.ActivityResultContract;
 import androidx.activity.result.contract.ActivityResultContracts;
-import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.annotation.NonNull;
@@ -26,7 +24,6 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.sebastienyannis.zarazarao.databinding.FragmentServeImagesBinding;
-import com.sebastienyannis.zarazarao.databinding.FragmentWelcomeBinding;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,7 +32,6 @@ import java.util.List;
 public class ServeImagesFragment extends Fragment {
 
     private FragmentServeImagesBinding binding;
-    private ActivityResultLauncher<String> permissionLauncher;
 
 
     public ServeImagesFragment() {
@@ -70,7 +66,7 @@ public class ServeImagesFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        permissionLauncher = registerForActivityResult(
+        ActivityResultLauncher<String> permissionLauncher = registerForActivityResult(
                 new ActivityResultContracts.RequestPermission(),
                 isGranted -> {
                     if (isGranted) {
@@ -99,7 +95,7 @@ public class ServeImagesFragment extends Fragment {
 
 
 
-
+    //TODO move to model
     private List<Uri> loadImagesFromGallery(Context context) {
         List<Uri> imageUris = new ArrayList<>();
         Uri collection;

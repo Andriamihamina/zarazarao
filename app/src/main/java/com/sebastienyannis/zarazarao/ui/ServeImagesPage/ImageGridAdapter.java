@@ -1,4 +1,4 @@
-package com.sebastienyannis.zarazarao.ui;
+package com.sebastienyannis.zarazarao.ui.ServeImagesPage;
 
 
 import android.content.Context;
@@ -27,7 +27,7 @@ public class ImageGridAdapter extends RecyclerView.Adapter<ImageGridAdapter.Imag
         ImageView imageItemView;
         public ImageItemViewHolder(@NonNull View imageItemView) {
             super(imageItemView);
-            this.imageItemView = imageItemView.findViewById(R.id.imageView);
+            this.imageItemView = imageItemView.findViewById(R.id.imageGrid);
         }
     }
 
