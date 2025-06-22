@@ -1,4 +1,4 @@
-# 📲 LAN Image Transfer App (Android)
+# 📲 LAN File Transfer App (Android)
 
 An Android app for sharing files over a local network using an embedded **NanoHTTPD** server. 
 Designed for seamless image browsing and transfer from your Android phone to any device on the same LAN, via a browser, or another android.
