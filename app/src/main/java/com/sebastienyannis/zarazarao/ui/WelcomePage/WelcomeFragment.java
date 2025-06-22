@@ -16,9 +16,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
-import com.sebastienyannis.zarazarao.models.WelcomeViewModel;
+import com.sebastienyannis.zarazarao.data.model.WelcomeViewModel;
+import com.sebastienyannis.zarazarao.data.repository.ServerInfoRepository;
 import com.sebastienyannis.zarazarao.databinding.FragmentWelcomeBinding;
 import com.sebastienyannis.zarazarao.backend.HttpServer;
 
@@ -76,12 +78,26 @@ public class WelcomeFragment extends Fragment {
     private void setupRecyclerView() {
         RecyclerView recyclerView = binding.serverList;
         serverListAdapter = new ServerListAdapter(); // Create once
+        TextView connectionStateStateText = binding.connectionState;
 
         recyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
         recyclerView.setAdapter(serverListAdapter); // Use that same instance
 
-        model.getServers().observe(getViewLifecycleOwner(), updatedList -> {
-            serverListAdapter.submitList(updatedList);
+        model.getState().observe(getViewLifecycleOwner(), updatedState -> {
+            serverListAdapter.submitList(updatedState.getServiceInfos());
+            boolean isConnected = (server != null) && server.isConnected();
+            if (!isConnected) { connectionStateStateText.setText("Disconnected"); } //TODO use StringRes to internationalize
+            else {
+                ServerInfoRepository serverInfoRepository = ServerInfoRepository.getInstance();
+                InetAddress ipAddress = serverInfoRepository.getLocalIpAddress();
+                if ( ipAddress == null ) {
+                    connectionStateStateText.setText("Not connected to Wifi");
+                } else {
+                    connectionStateStateText.setText("Connected to: "+ ipAddress.toString());
+                }
+
+            }
+
         });
     }
 
@@ -95,7 +111,9 @@ public class WelcomeFragment extends Fragment {
         startButton.setOnClickListener( v -> {
             try {
                 this.start();//TODO rename function
-                server = new HttpServer();
+                //TODO make the port dynamic
+                server = new HttpServer(requireContext().getApplicationContext());
+                server.start();
                 Toast.makeText(requireContext(), "Server started", Toast.LENGTH_SHORT).show();
                 startButton.setEnabled(false);
             } catch (IOException e) {
@@ -167,7 +185,8 @@ public class WelcomeFragment extends Fragment {
     public void start() {
         Executors.newSingleThreadExecutor().execute(()-> {
             try {
-                InetAddress addr = model.getLocalIpAddress();
+                ServerInfoRepository serverInfoRepository = ServerInfoRepository.getInstance();
+                InetAddress addr = serverInfoRepository.getLocalIpAddress();
                 jmdns = JmDNS.create(addr);
                 System.out.println("Eto");
             } catch (IOException e) {

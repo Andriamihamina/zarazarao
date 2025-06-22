@@ -1,14 +1,10 @@
 package com.sebastienyannis.zarazarao.ui.ServeImagesPage;
 
 import android.Manifest;
-import android.content.ContentUris;
-import android.content.Context;
 import android.content.pm.PackageManager;
-import android.database.Cursor;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.provider.MediaStore;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,18 +20,19 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.sebastienyannis.zarazarao.databinding.FragmentServeImagesBinding;
+import com.sebastienyannis.zarazarao.data.model.ServeImageViewModel;
 
-import java.util.ArrayList;
 import java.util.List;
 
 
 public class ServeImagesFragment extends Fragment {
 
     private FragmentServeImagesBinding binding;
+    private ServeImageViewModel imageViewModel;
 
 
     public ServeImagesFragment() {
-
+        imageViewModel = new ServeImageViewModel();
     }
 
     public static ServeImagesFragment newInstance() {
@@ -58,7 +55,7 @@ public class ServeImagesFragment extends Fragment {
     void setupRecyclerView() {
         RecyclerView recyclerView = binding.imageGrid;
         recyclerView.setLayoutManager(new GridLayoutManager(getContext(), 3));
-        List<Uri> imageUris = this.loadImagesFromGallery(requireContext());
+        List<Uri> imageUris = this.imageViewModel.loadImagesFromGallery(requireContext());
         recyclerView.setAdapter(new ImageGridAdapter(getContext(), imageUris));
     }
 
@@ -96,37 +93,5 @@ public class ServeImagesFragment extends Fragment {
 
 
     //TODO move to model
-    private List<Uri> loadImagesFromGallery(Context context) {
-        List<Uri> imageUris = new ArrayList<>();
-        Uri collection;
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            collection = MediaStore.Images.Media.getContentUri(MediaStore.VOLUME_EXTERNAL);
-        } else {
-            collection = MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
-        }
-
-        String[] projection = new String[]{
-                MediaStore.Images.Media._ID
-        };
-
-        try (Cursor cursor = context.getContentResolver().query(
-                collection,
-                projection,
-                null,
-                null,
-                MediaStore.Images.Media.DATE_ADDED + " DESC"
-        )) {
-            if (cursor != null) {
-                int idColumn = cursor.getColumnIndexOrThrow(MediaStore.Images.Media._ID);
-                while (cursor.moveToNext()) {
-                    long id = cursor.getLong(idColumn);
-                    Uri contentUri = ContentUris.withAppendedId(collection, id); // fixed
-                    imageUris.add(contentUri);
-                }
-            }
-        }
-
-        return imageUris;
-    }
 }
